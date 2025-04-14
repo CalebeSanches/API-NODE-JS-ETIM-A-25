@@ -1,7 +1,7 @@
 const db = require('../dataBase/connection'); 
 
 module.exports = {
-    async listarUsuarios(request, response) {
+    async listarPagamentos(request, response) {
         try {
             return response.status(200).json({
                 sucesso: true, 
@@ -16,7 +16,7 @@ module.exports = {
             });
         }
     }, 
-    async cadastrarUsuarios(request, response) {
+    async cadastrarPagamentos(request, response) {
         try {
             return response.status(200).json({
                 sucesso: true, 
@@ -31,7 +31,7 @@ module.exports = {
             });
         }
     }, 
-    async editarUsuarios(request, response) {
+    async editarPagamentos(request, response) {
         try {
             return response.status(200).json({
                 sucesso: true, 
@@ -46,7 +46,7 @@ module.exports = {
             });
         }
     }, 
-    async apagarUsuarios(request, response) {
+    async apagarPagamentos(request, response) {
         try {
             return response.status(200).json({
                 sucesso: true, 
