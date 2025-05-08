@@ -18,11 +18,25 @@ module.exports = {
     }, 
     async cadastrarPagamentos(request, response) {
         try {
+
+            const sql =`
+            SELECT
+               pag_id, contrato_id, pag_valor, pag_data_pagamento, pag_status FROM PAGAMENTOS;
+            `;
+
+            const [rows] = await db.query(sql);
+            
+            const nRegistros = rows.length;
+
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Cadastro de usuários', 
-                dados: null
+                mensagem: 'Lista de pagamentos', 
+                nRegistros,
+                dados: rows
             });
+
+
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false, 

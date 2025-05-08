@@ -3,11 +3,25 @@ const db = require('../dataBase/connection');
 module.exports = {
     async listarContratos(request, response) {
         try {
+
+            const sql =`
+            SELECT
+               contrato_id, id_negociacao, contrato_data_assinatura, contrato_detalhes_contrato FROM CONTRATOS;
+            `;
+
+            const [rows] = await db.query(sql);
+            
+            const nRegistros = rows.length;
+
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Lista de usuários', 
-                dados: null
+                mensagem: 'Lista de contratos', 
+                nRegistros,
+                dados: rows
             });
+
+
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false, 
