@@ -1,13 +1,26 @@
 const db = require('../dataBase/connection'); 
 
 module.exports = {
-    async listarPagamentos(request, response) {
+    async listarNotas_fiscais(request, response) {
         try {
+            const sql =`
+            SELECT
+               nota_fiscal_id, contrato_id, nota_fiscal_numero, nota_fiscal_data_emissao, nota_fiscal_detalhes FROM NOTAS_FISCAIS;
+            `;
+
+            const [rows] = await db.query(sql);
+            
+            const nRegistros = rows.length;
+
+
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Lista de usuários', 
-                dados: null
+                mensagem: 'Lista de notas_fiscais', 
+                nRegistros,
+                dados: rows
             });
+
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false, 
@@ -19,24 +32,33 @@ module.exports = {
     async cadastrarPagamentos(request, response) {
         try {
 
-            const sql =`
-            SELECT
-               pag_id, contrato_id, pag_valor, pag_data_pagamento, pag_status FROM PAGAMENTOS;
-            `;
-
-            const [rows] = await db.query(sql);
+            const { contrato_id, nota_fiscal_numero, nota_fiscal_data_emissao, nota_fiscal_detalhes } = request.body;
             
-            const nRegistros = rows.length;
+            // Instrução SQL
+            const sql = `
+              INSERT INTO NOTAS_FISCAIS (contrato_id,
+               nota_fiscal_numero,
+                nota_fiscal_data_emissao,
+                 nota_fiscal_detalhes) VALUES
+                 (?,?,?,?)
+                    `;
+
+                    const values = [contrato_id, nota_fiscal_numero, nota_fiscal_data_emissao, nota_fiscal_detalhes];
+
+                    const [result] = await db.query(sql, values);
+
+                    const dados = {
+                        contrato_id: result.insertId,
+                        nota_fiscal_numero, 
+                        nota_fiscal_data_emissao, 
+                        nota_fiscal_detalhes
+                    };
 
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Lista de pagamentos', 
-                nRegistros,
-                dados: rows
+                mensagem: 'Cadastro de usuários', 
+                dados: dados
             });
-
-
-
         } catch (error) {
             return response.status(500).json({
                 sucesso: false, 

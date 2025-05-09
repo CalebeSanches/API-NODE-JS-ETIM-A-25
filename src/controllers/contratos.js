@@ -32,10 +32,33 @@ module.exports = {
     }, 
     async cadastrarContratos(request, response) {
         try {
+
+            const { id_negociacao, contrato_data_assinatura, contrato_detalhes_contrato} = request.body;
+            
+            // Instrução SQL
+            const sql = `
+                INSERT INTO CONTRATOS (id_negociacao,
+                 contrato_data_assinatura,
+                 contrato_detalhes_contrato) 
+                VALUES
+                 (?,?,?)
+                    `;
+
+                    const values = [id_negociacao, contrato_data_assinatura, contrato_detalhes_contrato];
+
+                    const [result] = await db.query(sql, values);
+
+                    const dados = {
+                        id_negociacao: result.insertId,
+                        contrato_data_assinatura,
+                        contrato_detalhes_contrato
+                    };
+
+
             return response.status(200).json({
                 sucesso: true, 
                 mensagem: 'Cadastro de usuários', 
-                dados: null
+                dados: dados
             });
         } catch (error) {
             return response.status(500).json({

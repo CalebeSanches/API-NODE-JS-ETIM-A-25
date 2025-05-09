@@ -1,10 +1,21 @@
-const express = require('express');
+require('dotenv').config();
+const express = require('express'); 
+const cors = require('cors');
 
-const app = express();
+const routes = require('./src/routes/routes');
 
-const porta = 3333;
+const app = express(); 
+app.use(cors()); 
+app.use(express.json()); 
 
-app.listem(porta, () => {
-    console.log(`Servidor iniciado na porta ${porta}`);
+app.use(routes);
 
+const porta = process.env.PORT || 3333;
+
+app.listen(porta, () => {
+    console.log(`Servidor iniciado em http://localhost:${porta}`);
+});
+
+app.get('/', (request, response) => {
+    response.send('Hello World');
 });
