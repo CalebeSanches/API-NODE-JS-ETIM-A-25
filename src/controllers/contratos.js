@@ -73,7 +73,7 @@ module.exports = {
             return response.status(200).json({
                 sucesso: true, 
                 mensagem: 'Alteração no cadastro de usuário', 
-                dados: null
+                dados: dados
             });
         } catch (error) {
             return response.status(500).json({
