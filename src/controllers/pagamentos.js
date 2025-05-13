@@ -4,7 +4,13 @@ module.exports = {
     async listarPagamentos(request, response) {
         try {
             const sql =`
-           INSERT INTO PAGAMENTOS (contrato_id, pag_valor, pag_data_pagamento, pag_status) VALUES
+           SELECT 
+           pag_id, 
+           contrato_id, 
+           pag_valor, 
+           pag_data_pagamento, 
+           pag_status 
+           FROM PAGAMENTOS;
             `;
 
             const [rows] = await db.query(sql);
@@ -68,15 +74,44 @@ module.exports = {
     }, 
     async editarPagamentos(request, response) {
         try {
+            const { contrato_id, pag_valor, pag_data_pagamento, pag_status } = request.body;
+            const { id } = request.params;
+    
+            const sql = `
+                UPDATE PAGAMENTOS SET
+                    contrato_id =?, pag_valor =?, pag_data_pagamento =?, pag_status=?
+                WHERE
+                    pag_id = ?;
+            `;
+    
+            const values = [contrato_id, pag_valor, pag_data_pagamento, pag_status, id];
+    
+            const [result] = await db.query(sql, values);
+    
+            if (result.affectedRows === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Contrato com ID ${id} não encontrado!`,
+                    dados: null
+                });
+            }
+    
+            const dados = {
+                contrato_id, 
+                pag_valor, 
+                pag_data_pagamento, 
+                pag_status
+            };
+    
             return response.status(200).json({
-                sucesso: true, 
-                mensagem: 'Alteração no pagamento', 
-                dados: null
+                sucesso: true,
+                mensagem: 'Contrato atualizado com sucesso!',
+                dados
             });
         } catch (error) {
             return response.status(500).json({
-                sucesso: false, 
-                mensagem: 'Erro na requisição.', 
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
                 dados: error.message
             });
         }

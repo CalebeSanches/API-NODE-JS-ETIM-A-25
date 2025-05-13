@@ -69,15 +69,44 @@ module.exports = {
     }, 
     async editarNotas_fiscais(request, response) {
         try {
+            const { contrato_id, nota_fiscal_numero, nota_fiscal_data_emissao, nota_fiscal_detalhes } = request.body;
+            const { id } = request.params;
+    
+            const sql = `
+                UPDATE NOTAS_FISCAIS SET
+                    contrato_id =?, nota_fiscal_numero =?, nota_fiscal_data_emissao =?, nota_fiscal_detalhes =?
+                WHERE
+                    nota_fiscal_id = ?;
+            `;
+    
+            const values = [contrato_id, nota_fiscal_numero, nota_fiscal_data_emissao, nota_fiscal_detalhes, id];
+    
+            const [result] = await db.query(sql, values);
+    
+            if (result.affectedRows === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Contrato com ID ${id} não encontrado!`,
+                    dados: null
+                });
+            }
+    
+            const dados = {
+                contrato_id, 
+                nota_fiscal_numero, 
+                nota_fiscal_data_emissao, 
+                nota_fiscal_detalhes
+            };
+    
             return response.status(200).json({
-                sucesso: true, 
-                mensagem: 'Alteração no cadastro de usuário', 
-                dados: null
+                sucesso: true,
+                mensagem: 'Contrato atualizado com sucesso!',
+                dados
             });
         } catch (error) {
             return response.status(500).json({
-                sucesso: false, 
-                mensagem: 'Erro na requisição.', 
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
                 dados: error.message
             });
         }

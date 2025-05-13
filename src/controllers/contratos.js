@@ -70,40 +70,48 @@ module.exports = {
     }, 
     async editarContratos(request, response) {
         try {
-
-            const { id_negociacao, contrato_data_assinatura, contrato_detalhes_contrato} = request.body;
-            
-            // Instrução SQL
+            const { id_negociacao, contrato_data_assinatura, contrato_detalhes_contrato } = request.body;
+            const { id } = request.params;
+    
             const sql = `
-                INSERT INTO CONTRATOS (id_negociacao = ?,
-                 contrato_data_assinatura = ?,
-                 contrato_detalhes_contrato = ?) 
-                VALUES
-                    `;
-
-                    const values = [id_negociacao, contrato_data_assinatura, contrato_detalhes_contrato];
-
-                    const [result] = await db.query(sql, values);
-
-                    const dados = {
-                        id_negociacao: result.insertId,
-                        contrato_data_assinatura,
-                        contrato_detalhes_contrato
-                    };
-
+                UPDATE contratos SET
+                    id_negociacao = ?, contrato_data_assinatura = ?, contrato_detalhes_contrato = ?
+                WHERE
+                    contrato_id = ?;
+            `;
+    
+            const values = [id_negociacao, contrato_data_assinatura, contrato_detalhes_contrato, id];
+    
+            const [result] = await db.query(sql, values);
+    
+            if (result.affectedRows === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Contrato com ID ${id} não encontrado!`,
+                    dados: null
+                });
+            }
+    
+            const dados = {
+                id_negociacao,
+                contrato_data_assinatura,
+                contrato_detalhes_contrato
+            };
+    
             return response.status(200).json({
-                sucesso: true, 
-                mensagem: 'Alteração no cadastro de usuário', 
-                dados: dados
+                sucesso: true,
+                mensagem: 'Contrato atualizado com sucesso!',
+                dados
             });
         } catch (error) {
             return response.status(500).json({
-                sucesso: false, 
-                mensagem: 'Erro na requisição.', 
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
                 dados: error.message
             });
         }
-    }, 
+    }
+    , 
     async apagarContratos(request, response) {
         try {
             return response.status(200).json({
