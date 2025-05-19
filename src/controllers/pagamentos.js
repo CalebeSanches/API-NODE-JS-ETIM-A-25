@@ -118,25 +118,27 @@ module.exports = {
     }, 
     async apagarPagamentos(request, response) {
         try {
+            const ativo = false;
             const { id } = request.params;
-    // comando de exclusão
-            const sql = 'DELETE FROM pagamentos WHERE pag_id = ?';
-    // array com parâmetros da exclusão
-           const values = [id];
-    // executa instrução no banco de dados
+            const sql = `UPDATE pagamentos SET
+             pag_ativo = ? 
+             WHERE pag_id = ?;
+             `;
+           const values = [ativo, id];
+s
            const [result] = await db.query(sql, values);
 
     if (result.affectedRows === 0) {
         return res.status(404).json({
             sucesso: false,
-            mensagem: `Usuário ${pag_id} não encontrado!`,
+            mensagem: `pagamento ${pag_id} não encontrado!`,
             dados: null
         });
 
     }
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Exclusão de pagamento', 
+                mensagem: `pagamento ${id} excluido com sucesso.`, 
                 dados: null
             });
         } catch (error) {

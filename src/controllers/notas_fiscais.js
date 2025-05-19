@@ -113,25 +113,28 @@ module.exports = {
     }, 
     async apagarNotas_fiscais(request, response) {
         try {
+            const ativo = false;
 
             const { id } = request.params;
-    // comando de exclusão
-            const sql = 'DELETE FROM notas_fiscais WHERE nota_fiscal_id = ?';
-    // array com parâmetros da exclusão
-           const values = [id];
-    // executa instrução no banco de dados
+            const sql = `UPDATE notas_fiscais SET
+             nota_fiscal_id = ?
+             WHERE
+             nota_fiscal_id = ?;
+             `;
+
+           const values = [ativo, id];
            const [result] = await db.query(sql, values);
 
     if (result.affectedRows === 0) {
         return res.status(404).json({
             sucesso: false,
-            mensagem: `Usuário ${nota_fiscal_id} não encontrado!`,
+            mensagem: `Nota fiscal ${nota_fiscal_id} não encontrado!`,
             dados: null
         });
     }
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Exclusão de usuário', 
+                mensagem: `Nota fiscal ${id} excluida com sucesso.`, 
                 dados: null
             });
         } catch (error) {

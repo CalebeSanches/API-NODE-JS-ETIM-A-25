@@ -114,28 +114,33 @@ module.exports = {
     , 
     async apagarContratos(request, response) {
         try {
-
+            const ativo = false;
+    
             const { id } = request.params;
-    // comando de exclusão
-            const sql = 'DELETE FROM contratos WHERE contrato_id = ?';
-    // array com parâmetros da exclusão
-           const values = [id];
-    // executa instrução no banco de dados
+            const sql = `UPDATE contratos SET
+             contrato_ativo = ?
+             where
+             contrato_id = ?;
+             `;
+           
+           
+            const values = [ativo, id];
            const [result] = await db.query(sql, values);
 
     if (result.affectedRows === 0) {
         return res.status(404).json({
             sucesso: false,
-            mensagem: `Usuário ${contrato_id} não encontrado!`,
+            mensagem: `contrato ${contrato_id} não encontrado!`,
             dados: null
         });
     }
 
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Exclusão de usuário', 
+                mensagem: `contrato ${id} exclúdo com sucesso`, 
                 dados: null
             });
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false, 
