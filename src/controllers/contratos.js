@@ -6,7 +6,13 @@ module.exports = {
 
             const sql =`
             SELECT
-               contrato_id, id_negociacao, contrato_data_assinatura, contrato_detalhes_contrato FROM CONTRATOS;
+               contrato_id, 
+               id_negociacao, 
+               contrato_data_assinatura, 
+               contrato_detalhes_contrato,
+               contrato_ativo = 1 AS contrato_ativo 
+               FROM CONTRATOS
+               WHERE contrato_ativo = 1;
             `;
 
             const [rows] = await db.query(sql);

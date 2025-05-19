@@ -5,7 +5,14 @@ module.exports = {
         try {
             const sql =`
             SELECT
-               nota_fiscal_id, contrato_id, nota_fiscal_numero, nota_fiscal_data_emissao, nota_fiscal_detalhes FROM NOTAS_FISCAIS;
+               nota_fiscal_id, 
+               contrato_id, 
+               nota_fiscal_numero, 
+               nota_fiscal_data_emissao, 
+               nota_fiscal_detalhes, 
+               nota_fiscal_ativo = 1 AS nota_fiscal_ativo  
+               FROM NOTAS_FISCAIS
+               WHERE nota_fiscal_ativo = 1;
             `;
 
             const [rows] = await db.query(sql);

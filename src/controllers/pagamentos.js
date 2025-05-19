@@ -9,8 +9,9 @@ module.exports = {
            contrato_id, 
            pag_valor, 
            pag_data_pagamento, 
-           pag_status 
-           FROM PAGAMENTOS;
+           pag_status, pag_ativo =1 AS pag_ativo 
+           FROM PAGAMENTOS
+           WHERE pag_ativo = 1;
             `;
 
             const [rows] = await db.query(sql);
